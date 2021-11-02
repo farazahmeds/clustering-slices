@@ -112,7 +112,7 @@ class SSIMClustering:
                 k = round(k, 3)  # round the SSIM to 3 places
                 val.append(k)  # append val with kth SSIM
 
-            vol.append(val)  # Sum all the SSIM values for slice 'n'
+            vol.append(val) 
 
         clustering = SpectralClustering(
             n_clusters=self.n_clusters,
