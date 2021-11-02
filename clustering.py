@@ -45,7 +45,7 @@ class PerceptualSimilarityClustering:
             per_score = per_score.tolist()
             per_score = np.concatenate(
                 np.concatenate(np.concatenate(per_score))
-            )  # quick fix, could use improvement
+            )  
             perscore = np.ndarray.item(per_score)
             per_score = round(perscore, 3)
             return per_score
@@ -54,11 +54,11 @@ class PerceptualSimilarityClustering:
 
         for slice in total_slices_:
 
-            val = []  # Results for SSIM
+            val = []  
 
-            for i in range(img.shape[-1]):  # i runs for entire volume size (155)
+            for i in range(img.shape[-1]): 
                 score = perc_sim(img[:, :, slice], img[:, :, i])
-                val.append(score)  # append val with kth SSIM
+                val.append(score)  
             vol.append(val)
 
         clustering = SpectralClustering(
