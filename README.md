@@ -1,5 +1,5 @@
 # clustering-slices
-Clustering slices in NIfTI volumes based on Perceptual Similarity or SSIM
+Clustering slices within NIfTI volume based on Perceptual Similarity or SSIM
 
 This is an implementation of clustering (more specifically spectral clustering) slices in an MR Volume (NIfTI format) by using similarity measure such as
 Perceptual Similarity or Structural Similarity Index Measure (SSIM). 
