@@ -7,15 +7,32 @@ from skimage.metrics import structural_similarity as ssim
 from sklearn import cluster
 from sklearn.cluster import KMeans, SpectralClustering
 from pathlib import Path
+from abc import ABC, abstractmethod
 
 
 cwd = os.getcwd()
 
+class Clustering(ABC):
+    def __init__(self):
+        pass
 
-class PerceptualSimilarityClustering:
+    def compute_total_slices(self):
+        self.img = nib.load(self.path)
+        self.img = self.img.get_fdata()
+        self.nth_slice = self.img.shape[-1]
+        self.total_slices = np.arange(self.nth_slice).tolist()
+
+
+    @abstractmethod
+    def return_samples(self):
+        pass
+
+
+class PerceptualSimilarityClustering(Clustering):
     def __init__(
         self, path, n_clusters
     ):
+        super().__init__()
         self.path = path
         self.n_clusters = n_clusters
 
@@ -24,12 +41,7 @@ class PerceptualSimilarityClustering:
         loss_fn_alex = lpips.LPIPS(net="alex")
         loss_fn_alex.cuda()
 
-        path = self.path
-        img = nib.load(path)
-        img = img.get_fdata()  # get image array
-        print (img.shape)
-        x, y, z = img[:, :, :].shape
-        total_slices_ = np.arange(z).tolist()  # get total slice no
+        super().compute_total_slices()
 
         def perc_sim(img1, img2):
             x, y = img1.shape
@@ -49,12 +61,12 @@ class PerceptualSimilarityClustering:
 
         vol = []
 
-        for slice in total_slices_:
+        for slice in self.total_slices:
 
             val = []  
 
-            for i in range(img.shape[-1]): 
-                score = perc_sim(img[:, :, slice], img[:, :, i])
+            for i in range(self.img.shape[-1]):
+                score = perc_sim(self.img[:, :, slice], self.img[:, :, i])
                 val.append(score)  
             vol.append(val)
 
@@ -77,7 +89,7 @@ class PerceptualSimilarityClustering:
         return n_classes
 
 
-class SSIMClustering:
+class SSIMClustering(Clustering):
     def __init__(
         self, path, n_clusters
     ):
@@ -86,25 +98,26 @@ class SSIMClustering:
         self.n_clusters = n_clusters
 
     def return_samples(self):
+        #
+        # img = Path(cwd, self.path)
+        # img = nib.load(img)
+        #
+        # img = img.get_fdata()  # get image array
+        #
+        # x, y, z = img[:, :, :].shape
+        #
+        # total_slices_ = np.arange(z).tolist()  # get total slice no
 
-        img = Path(cwd, self.path)
-        img = nib.load(img)
-
-        img = img.get_fdata()  # get image array
-
-        x, y, z = img[:, :, :].shape
-
-        total_slices_ = np.arange(z).tolist()  # get total slice no
-
+        super().compute_total_slices()
         vol = []
 
-        for slice in total_slices_:
+        for slice in self.total_slices:
 
             val = []  # Results for SSIM
 
-            for i in range(img.shape[-1]):  # i runs for entire volume size (155)
+            for i in range(self.img.shape[-1]):  # i runs for entire volume size (155)
                 k = ssim(
-                    img[:, :, slice], img[:, :, i]
+                    self.img[:, :, slice], self.img[:, :, i]
                 )  # Perform SSIM between each slice and rest of the slices, example slice=1, i=1 SSIM between slice 1 and 1
                 k = round(k, 3)  # round the SSIM to 3 places
                 val.append(k)  # append val with kth SSIM
