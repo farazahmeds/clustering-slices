@@ -1,12 +1,16 @@
+
 '''Cluster slices within NIFTI based on perceptual similarity or Structural Similarity Index Measure'''
 
-from clustering import PerceptualSimilarityClustering
-from clustering import SSIMClustering
+from clustering import PerceptualSimilarity
+from clustering import SSIM
+
 
 def main():
 
-    k = PerceptualSimilarityClustering('data/BraTS19_2013_2_1_t1.nii.gz', 5) # k=5 clusters
-    k = k.return_samples()
+    cluster_vol = SSIM('BraTS19_2013_2_1_t1ce.nii.gz', 24) # k=5 clusters
+    cluster_vol = cluster_vol.return_samples()
+    print (cluster_vol)
+
 
 
 if __name__ == '__main__':
