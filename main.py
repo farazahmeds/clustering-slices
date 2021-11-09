@@ -7,11 +7,12 @@ from clustering import SSIM
 
 def main():
 
-    cluster_vol = SSIM('data/someones_epi.nii.gz', n_clusters=5)
-    print (cluster_vol.return_samples())
+    cluster_perc_sim = PerceptualSimilarity('data/someones_epi.nii.gz', n_clusters=5)
+    print(cluster_perc_sim.return_samples())
 
-
-
+    cluster_SSIM = SSIM('data/someones_epi.nii.gz', n_clusters=5)
+    print(cluster_SSIM.return_samples())
+    
 
 if __name__ == '__main__':
     main()
