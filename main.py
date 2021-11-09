@@ -7,7 +7,7 @@ from clustering import SSIM
 
 def main():
 
-    cluster_vol = SSIM('BraTS19_2013_2_1_t1ce.nii.gz', 24) # k=5 clusters
+    cluster_vol = SSIM('someones_epi.nii.gz', 5) # k=5 clusters
     cluster_vol = cluster_vol.return_samples()
     print (cluster_vol)
 
