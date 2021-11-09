@@ -48,6 +48,8 @@ class Clustering(ABC):
 
 
 class PerceptualSimilarity(Clustering):
+    
+    '''based on https://github.com/richzhang/PerceptualSimilarity'''
 
     def __init__(
             self, path, n_clusters
@@ -57,7 +59,7 @@ class PerceptualSimilarity(Clustering):
         self.n_clusters = n_clusters
 
     def return_samples(self) -> 'list of lists, containing clusters':
-
+        
         loss_fn_alex = lpips.LPIPS(net="alex")
         loss_fn_alex.cuda()
 
