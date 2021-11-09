@@ -2,13 +2,10 @@ import os
 import lpips
 import nibabel as nib
 import numpy as np
-import pandas as pd
 import torch
 from skimage.metrics import structural_similarity as ssim
 from sklearn import cluster
 from sklearn.cluster import KMeans, SpectralClustering
-import random
-from abc import ABC, abstractmethod
 from pathlib import Path
 
 
