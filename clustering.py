@@ -13,6 +13,7 @@ from abc import ABC, abstractmethod
 cwd = os.getcwd()
 
 class Clustering(ABC):
+    
     def __init__(self):
         pass
 
@@ -29,6 +30,7 @@ class Clustering(ABC):
 
 
 class PerceptualSimilarityClustering(Clustering):
+    
     def __init__(
         self, path, n_clusters
     ):
@@ -90,6 +92,7 @@ class PerceptualSimilarityClustering(Clustering):
 
 
 class SSIMClustering(Clustering):
+    
     def __init__(
         self, path, n_clusters
     ):
@@ -98,15 +101,6 @@ class SSIMClustering(Clustering):
         self.n_clusters = n_clusters
 
     def return_samples(self):
-        #
-        # img = Path(cwd, self.path)
-        # img = nib.load(img)
-        #
-        # img = img.get_fdata()  # get image array
-        #
-        # x, y, z = img[:, :, :].shape
-        #
-        # total_slices_ = np.arange(z).tolist()  # get total slice no
 
         super().compute_total_slices()
         vol = []
