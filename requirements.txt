@@ -1,0 +1,5 @@
+torch
+torchvision
+lpips
+nibabel
+scikit-learn
