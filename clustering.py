@@ -9,11 +9,11 @@ from sklearn.cluster import KMeans, SpectralClustering
 from pathlib import Path
 from abc import ABC, abstractmethod
 
-
 cwd = os.getcwd()
 
+
 class Clustering(ABC):
-    
+
     def __init__(self):
         pass
 
@@ -23,16 +23,34 @@ class Clustering(ABC):
         self.nth_slice = self.img.shape[-1]
         self.total_slices = np.arange(self.nth_slice).tolist()
 
+    def spectral_clustering(self):
+        clustering = SpectralClustering(
+            n_clusters=self.n_clusters,
+            assign_labels="discretize",
+            random_state=0,
+            affinity="precomputed",
+        ).fit(self.vol)
+
+        n_classes = []
+        for num in range(self.n_clusters):
+            k = [
+                i for i, j in enumerate(clustering.labels_) if j == num
+            ]  # returns the slice_index for the slice belonging to jth class
+            n_classes.append(
+                k
+            )  # populate 'n_classes=[]' with which slice index belongs to which class
+
+        return n_classes
 
     @abstractmethod
     def return_samples(self):
         pass
 
 
-class PerceptualSimilarityClustering(Clustering):
-    
+class PerceptualSimilarity(Clustering):
+
     def __init__(
-        self, path, n_clusters
+            self, path, n_clusters
     ):
         super().__init__()
         self.path = path
@@ -56,45 +74,29 @@ class PerceptualSimilarityClustering(Clustering):
             per_score = per_score.tolist()
             per_score = np.concatenate(
                 np.concatenate(np.concatenate(per_score))
-            )  
+            )
             perscore = np.ndarray.item(per_score)
             per_score = round(perscore, 3)
             return per_score
 
-        vol = []
+        self.vol = []
 
         for slice in self.total_slices:
 
-            val = []  
+            val = []
 
             for i in range(self.img.shape[-1]):
                 score = perc_sim(self.img[:, :, slice], self.img[:, :, i])
-                val.append(score)  
-            vol.append(val)
+                val.append(score)
+            self.vol.append(val)
 
-        clustering = SpectralClustering(
-            n_clusters=self.n_clusters,
-            assign_labels="discretize",
-            random_state=0,
-            affinity="precomputed",
-        ).fit(vol)
-        n_classes = []
-
-        for num in range(self.n_clusters):
-            k = [
-                i for i, j in enumerate(clustering.labels_) if j == num
-            ]  # returns the slice_index for the slice belonging to jth class
-            n_classes.append(
-                k
-            )  # populate 'n_classes=[]' with which slice index belongs to which class
-
-        return n_classes
+        return super().spectral_clustering()
 
 
-class SSIMClustering(Clustering):
-    
+class SSIM(Clustering):
+
     def __init__(
-        self, path, n_clusters
+            self, path, n_clusters
     ):
         super().__init__()
         self.path = path
@@ -103,7 +105,7 @@ class SSIMClustering(Clustering):
     def return_samples(self):
 
         super().compute_total_slices()
-        vol = []
+        self.vol = []
 
         for slice in self.total_slices:
 
@@ -116,23 +118,6 @@ class SSIMClustering(Clustering):
                 k = round(k, 3)  # round the SSIM to 3 places
                 val.append(k)  # append val with kth SSIM
 
-            vol.append(val) 
+            self.vol.append(val)
 
-        clustering = SpectralClustering(
-            n_clusters=self.n_clusters,
-            assign_labels="discretize",
-            random_state=0,
-            affinity="precomputed",
-        ).fit(vol)
-
-        n_classes = []
-
-        for num in range(self.n_clusters):
-            k = [
-                i for i, j in enumerate(clustering.labels_) if j == num
-            ]  # returns the slice_index for the slice belonging to jth class
-            n_classes.append(
-                k
-            )  # populate 'n_classes=[]' with which slice index belongs to which class
-
-        return n_classes
+        return super().spectral_clustering()
